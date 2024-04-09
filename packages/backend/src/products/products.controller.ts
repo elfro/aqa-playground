@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Inject, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Inject, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
   ApiBearerAuth,
@@ -31,24 +31,20 @@ export class ProductsController {
   private logger: Logger;
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Add new product' })
   @ApiBody({ type: CreateProductDto })
   @ApiCreatedResponse({ type: ProductDto, description: 'Returns created product' })
-  public async addProduct(
-    @Body() product: CreateProductDto,
-  ): Promise<ProductDto> {
+  public async addProduct(@Body() product: CreateProductDto): Promise<ProductDto> {
     return this.productService.create(product);
   }
 
   @Post('/mock')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Add new product' })
   @ApiCreatedResponse({ type: [Product], description: 'Returns created products' })
   public async addProducts(): Promise<Product[]> {
-    const products = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../data/products.json'), 'utf8'),
-    );
+    const products = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/products.json'), 'utf8'));
     const createdProducts: Product[] = [];
     for (const product of products) {
       createdProducts.push(await this.productService.create(product));
@@ -57,19 +53,26 @@ export class ProductsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [Product] })
-  @ApiUnauthorizedResponse({ description: Message.INVALID_CREDENTIALS })
+  // @ApiUnauthorizedResponse({ description: Message.INVALID_CREDENTIALS })
   @ApiOperation({ summary: 'Fetch all products' })
   public async findAll(): Promise<Product[]> {
     return this.productService.findAll();
   }
 
+  @Get(':id')
+  @ApiOkResponse({ type: Product })
+  @ApiOperation({ summary: 'Fetch product by id' })
+  public async findOne(@Param('id') id: number): Promise<Product> {
+    console.log(id);
+    return this.productService.findById(id);
+  }
   @Delete()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   @ApiNoContentResponse({ description: Message.NO_CONTENT })
-  @ApiUnauthorizedResponse({ description: Message.INVALID_CREDENTIALS })
+  // @ApiUnauthorizedResponse({ description: Message.INVALID_CREDENTIALS })
   @ApiOperation({ summary: 'Delete all products' })
   public async deleteAll(): Promise<void> {
     return this.productService.deleteAll();

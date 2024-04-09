@@ -1,12 +1,7 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { ConflictException, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Message } from '../common/message';
 import { CreateProductDto } from './dto/create.product.dto';
@@ -38,6 +33,18 @@ export class ProductsService {
 
   public async findAll(): Promise<Product[]> {
     return this.productRepository.find();
+  }
+
+  public async findById(id: number): Promise<Product> {
+    const product = this.productRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with such id [${id}] not found`);
+    }
+
+    return product;
   }
 
   public async deleteAll(): Promise<void> {
