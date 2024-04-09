@@ -14,4 +14,8 @@ export class ProductDto {
   @ApiProperty({ required: true })
   @IsNumber()
   quantity: number;
+
+  @ApiProperty({ required: true })
+  @IsString()
+  category: string;
 }

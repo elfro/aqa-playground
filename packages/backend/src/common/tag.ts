@@ -3,4 +3,5 @@ export enum Tag {
   USERS = 'users',
   PRODUCTS = 'products',
   PAYMENTS = 'payments',
+  CATEGORIES = 'categories',
 }

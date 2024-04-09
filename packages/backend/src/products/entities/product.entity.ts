@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('products')
 @Index(['id', 'title'], { unique: true })
@@ -37,4 +31,7 @@ export class Product {
 
   @Column({ type: 'varchar', length: 512, nullable: false })
   image: string;
+
+  @Column({ type: 'varchar', length: 256, nullable: false })
+  category: string;
 }
